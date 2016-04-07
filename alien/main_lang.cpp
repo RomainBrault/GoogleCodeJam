@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <ios>
+#include <exception>
 #include <regex>
 
 #define CHECK_STREAM(S) do { \
@@ -8,8 +10,8 @@
 } while (0)
 
 #define CHECK_END_STREAM(S) do { \
-    file.ignore(1); \
-    if (!file.eof()) throw std::ios_base::failure("error while parsing file"); \
+    (S).ignore(1); \
+    if (!(S).eof()) throw std::ios_base::failure("error while parsing file"); \
 } while (0)
 
 class AlienData {
@@ -88,28 +90,32 @@ public:
 
 };
 
-int main(int argc, char** argv) {
-
+int main(int argc, char** argv)
+{
     if (argc < 3) {
         std::cerr << "expected \'./programe filename\' n_threads ";
+        return -1;
     }
-
-    AlienData data;
-    data.parse_file(argv[1]);
-
-    std::vector<size_t> acc(data.N());
+    try {
+        AlienData data;
+        data.parse_file(argv[1]);
+    
+        std::vector<size_t> acc(data.N());
 #pragma omp parallel for num_threads(atoi(argv[2]))
-    for (size_t i = 0; i < data.N(); ++i) {
-        std::regex alien_signal_regex(data.alien_signal(i),
-            std::regex::optimize | std::regex_constants::nosubs);
-        for (size_t j = 0; j < data.D(); ++j) {
-            acc[i] += std::regex_match(data.alien_word(j), alien_signal_regex);
+        for (size_t i = 0; i < data.N(); ++i) {
+            std::regex alien_signal_regex(data.alien_signal(i),
+                std::regex::optimize | std::regex_constants::nosubs);
+            for (size_t j = 0; j < data.D(); ++j) {
+                acc[i] += std::regex_match(data.alien_word(j), alien_signal_regex);
+            }
         }
+        for (size_t i = 0; i < data.N(); ++i) {
+            std::cout << "Case #" + std::to_string(i + 1) + ": "
+                      << acc[i] << std::endl;
+        }
+    } catch (std::exception& exc) {
+        std::cerr << exc.what() << std::endl;
+        return -2;
     }
-    for (size_t i = 0; i < data.N(); ++i) {
-        std::cout << "Case #" + std::to_string(i + 1) + ": "
-                  << acc[i] << std::endl;
-    }
-
     return 0;
 }
