@@ -8,8 +8,8 @@
 } while (0)
 
 #define CHECK_END_STREAM(S) do { \
-    file.ignore(1); \
-    if (!file.eof()) throw std::ios_base::failure("error while parsing file"); \
+    (S).ignore(1); \
+    if (!(S).eof()) throw std::ios_base::failure("error while parsing file"); \
 } while (0)
 
 class AlienData {
