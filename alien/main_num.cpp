@@ -136,27 +136,32 @@ int main(int argc, char** argv) {
 
     if (argc < 3) {
         std::cerr << "expected \'./programe filename\' n_threads ";
+        return -1;
     }
-
-    AlienData data;
-    data.parse_file(argv[1]);
-
-    std::vector<std::string> res(data.n_num());
+    try {
+        AlienData data;
+        data.parse_file(argv[1]);
+    
+        std::vector<std::string> res(data.n_num());
 #pragma omp parallel num_threads(std::atoi(argv[2]))
 {
-    std::vector<size_t> t1;
-    std::vector<size_t> t2;
+        std::vector<size_t> t1;
+        std::vector<size_t> t2;
 #pragma omp for
-    for (size_t i = 0; i < data.n_num(); ++i) {
-        t1 = data.alien_number_to_source_base(i);
-        size_t dec = source_base_to_decimal(t1);
-        t2 = decimal_to_target_base(dec, data.target_base(i));
-        res[i] = data.target_base_to_alien_number(t2, i);
-    }
+        for (size_t i = 0; i < data.n_num(); ++i) {
+            t1 = data.alien_number_to_source_base(i);
+            size_t dec = source_base_to_decimal(t1);
+            t2 = decimal_to_target_base(dec, data.target_base(i));
+            res[i] = data.target_base_to_alien_number(t2, i);
+        }
 }
-    for (size_t i = 0; i < data.n_num(); ++i) {
-            std::cout << "Case #" + std::to_string(i + 1) + ": "
-                      << res[i] << std::endl;
+        for (size_t i = 0; i < data.n_num(); ++i) {
+                std::cout << "Case #" + std::to_string(i + 1) + ": "
+                          << res[i] << std::endl;
+        }
+    catch(std::exception& exc) {
+        std::cerr << exc.what() << std::endl;
+        return -2;
     }
     return 0;
 }
