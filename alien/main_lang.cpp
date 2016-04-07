@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <ios>
+#include <exception>
 #include <regex>
 
 #define CHECK_STREAM(S) do { \
