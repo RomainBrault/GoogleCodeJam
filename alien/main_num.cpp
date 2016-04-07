@@ -160,7 +160,7 @@ int main(int argc, char** argv) {
                 std::cout << "Case #" + std::to_string(i + 1) + ": "
                           << res[i] << std::endl;
         }
-    catch(std::exception& exc) {
+    } catch(std::exception& exc) {
         std::cerr << exc.what() << std::endl;
         return -2;
     }
