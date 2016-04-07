@@ -3,6 +3,7 @@
 #include <limits>
 #include <vector>
 #include <ios>
+#include <exception>
 #include <algorithm>
 
 #define CHECK_STREAM(S) do { \
