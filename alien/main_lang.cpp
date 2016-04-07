@@ -96,7 +96,7 @@ int main(int argc, char** argv)
         std::cerr << "expected \'./programe filename\' n_threads ";
         return -1;
     }
-try {
+    try {
         AlienData data;
         data.parse_file(argv[1]);
     
